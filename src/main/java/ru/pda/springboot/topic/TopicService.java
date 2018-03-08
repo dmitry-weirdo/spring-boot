@@ -29,4 +29,17 @@ public class TopicService {
         // todo: topic ids may clash
         topics.add(topic);
     }
+
+    public void updateTopic(final Long id, final Topic topic) {
+        final Topic existingTopic = getTopic(id);
+        if (existingTopic == null) {
+            System.out.println( String.format("Topic with id = %d is not found. Nothing to update.", id) );// todo: use logger instead
+            return;
+        }
+
+        // id is not updated, update only name and description
+        existingTopic.setName( topic.getName() );
+        existingTopic.setDescription( topic.getDescription() );
+    }
+
 }
