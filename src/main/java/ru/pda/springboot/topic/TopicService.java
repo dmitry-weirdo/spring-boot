@@ -42,4 +42,7 @@ public class TopicService {
         existingTopic.setDescription( topic.getDescription() );
     }
 
+    public void deleteTopic(final Long id) {
+        topics.removeIf( t -> t.getId().equals(id) );
+    }
 }
