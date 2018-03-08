@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TopicService {
@@ -16,5 +17,10 @@ public class TopicService {
 
     public List<Topic> getAllTopics() {
         return topics;
+    }
+
+    public Topic getTopic(final Long id) {
+        final Optional<Topic> topicOptional = topics.stream().filter(t -> t.getId().equals(id)).findFirst();
+        return topicOptional.orElse(null); // Optional#get will throw an exception if no value is present
     }
 }
