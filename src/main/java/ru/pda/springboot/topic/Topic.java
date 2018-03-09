@@ -1,8 +1,16 @@
 package ru.pda.springboot.topic;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Topic {
+
+    @Id
     private Long id;
+
     private String name;
+
     private String description;
 
     public Topic() {

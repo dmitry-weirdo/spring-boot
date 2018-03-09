@@ -1,5 +1,6 @@
 package ru.pda.springboot.topic;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -10,39 +11,33 @@ import java.util.Optional;
 @Service
 public class TopicService {
 
-    private final List<Topic> topics = new ArrayList<>( Arrays.asList( // make the list modifiable
-          new Topic(111L, "111 topic", "111 topic description")
-        , new Topic(333L, "333 topic", "333 topic description")
-        , new Topic(666L, "666 topic", "666 topic description")
-    ) );
+    @Autowired
+    private TopicRepository topicRepository;
 
     public List<Topic> getAllTopics() {
+        final Iterable<Topic> topicsIterable = topicRepository.findAll();
+
+        final List<Topic> topics = new ArrayList<>();
+        topicsIterable.forEach( topics::add );
+
         return topics;
     }
 
     public Topic getTopic(final Long id) {
-        final Optional<Topic> topicOptional = topics.stream().filter(t -> t.getId().equals(id)).findFirst();
+        final Optional<Topic> topicOptional = topicRepository.findById(id);
         return topicOptional.orElse(null); // Optional#get will throw an exception if no value is present
     }
 
     public void addTopic(final Topic topic) {
         // todo: topic ids may clash
-        topics.add(topic);
+        topicRepository.save(topic); // this will update an existing record if it exists by id
     }
 
     public void updateTopic(final Long id, final Topic topic) {
-        final Topic existingTopic = getTopic(id);
-        if (existingTopic == null) {
-            System.out.println( String.format("Topic with id = %d is not found. Nothing to update.", id) );// todo: use logger instead
-            return;
-        }
-
-        // id is not updated, update only name and description
-        existingTopic.setName( topic.getName() );
-        existingTopic.setDescription( topic.getDescription() );
+        topicRepository.save(topic); // this will save or update by id
     }
 
     public void deleteTopic(final Long id) {
-        topics.removeIf( t -> t.getId().equals(id) );
+        topicRepository.deleteById(id); // will throw an exception if entity with this id does not exist
     }
 }
